@@ -11,7 +11,7 @@
 import { saveAs } from "file-saver";
 import pdfMake from "pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import Chart from "chart.js";
+import Chart from "chart.js/auto";
 // import C2S from "canvas2svg";
 // import { tweakLib } from "@/modules/export/helpers/chartjs-to-svg";
 
@@ -40,6 +40,19 @@ function tweakLib() {
   };
   C2S.prototype.addEventListener = function (/*type, listener, eventListenerOptions*/) {
     // nothing to do here, but we need this function :)
+  };
+
+  C2S.prototype.resetTransform = function () {
+    // Corrige o erro abaixo usando o Polyfill:
+    // TypeError: ctx.resetTransform is not a function
+    // at clearCanvas (helpers.segment.js?cfbe:1182:1)
+    // at Chart.clear (chart.esm.js?bae6:5439:1)
+    // at Chart.draw (chart.esm.js?bae6:5757:1)
+    // at Chart.render (chart.esm.js?bae6:5746:1)
+    // at Chart.update (chart.esm.js?bae6:5645:1)
+    // at new Chart (chart.esm.js?bae6:5402:1)
+    // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/resetTransform#polyfill
+    this.setTransform(1, 0, 0, 1, 0, 0);
   };
 }
 
