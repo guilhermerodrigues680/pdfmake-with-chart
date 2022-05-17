@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "octref.vetur",
+    "gruntfuggly.todo-tree",
+    "humao.rest-client",
+    "naumovs.color-highlight",
+    "wmaurer.change-case",
+    "aaron-bond.better-comments"
+  ]
+}
