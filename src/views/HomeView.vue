@@ -8,7 +8,7 @@
 
 <script>
 // import Swal from "sweetalert2";
-// import { saveAs } from "file-saver";
+import { saveAs } from "file-saver";
 import pdfMake from "pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import Chart from "chart.js";
@@ -159,6 +159,12 @@ export default {
 
       console.debug({ svgChart });
 
+      //serialize your SVG
+      const mySerializedSVG = svgContext.getSerializedSvg(); //true here, if you need to convert named to numbered entities.
+      //If you really need to you can access the shadow inline SVG created by calling:
+      const svg = svgContext.getSvg();
+      console.debug({ mySerializedSVG, svg });
+
       //https://stackoverflow.com/questions/45563420/exporting-chart-js-charts-to-svg-using-canvas2svg-js
 
       // create download link
@@ -166,6 +172,10 @@ export default {
       // link.href = "data:image/svg+xml;utf8," + encodeURIComponent(svgContext.getSerializedSvg());
       // link.download = filename;
       // link.text = linkText;
+
+      const filename = "mySerializedSVG.svg";
+      const blob = new Blob([mySerializedSVG], { type: "image/svg+xml" });
+      saveAs(blob, filename);
 
       // // add link to the page
       // document.getElementById("wrapper").appendChild(link);
