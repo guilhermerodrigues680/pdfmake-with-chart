@@ -10,6 +10,11 @@ const routes = [
     name: "home",
     component: HomeView,
   },
+  {
+    path: "/chartjs3",
+    name: "chartjs3",
+    component: () => import("@/views/Chartjs3View.vue"),
+  },
   // {
   //   path: "/about",
   //   name: "about",
