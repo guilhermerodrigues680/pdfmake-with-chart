@@ -3,6 +3,7 @@
     <canvas ref="canvas"></canvas>
     <div>
       <button @click="exportChartToSvg()">Exportar SVG</button>
+      <button @click="handleOpenPDF()">Abrir PDF</button>
     </div>
   </div>
 </template>
@@ -11,6 +12,7 @@
 import { saveAs } from "file-saver";
 import Chart from "chart.js/auto";
 import C2S from "@/modules/export/helpers/canvas2svg-with-tweak";
+import { generatePDF } from "@/modules/pdf-generator/helpers/pdf-generator";
 
 const data = {
   labels: [0, 1, 2, 3, 4],
@@ -76,8 +78,8 @@ export default {
   methods: {
     run() {
       // set the output dimensions (helpful especially for PNG)
-      const width = 900;
-      const height = 600;
+      const width = 300;
+      const height = 200;
 
       // set the chart's size based on the values we set at the top
       /** @type {{canvas: HTMLCanvasElement}} */
@@ -90,6 +92,36 @@ export default {
       this.chart = Object.freeze({ chart });
 
       console.debug({ chart });
+    },
+
+    async handleOpenPDF() {
+      // TODO: refatorar
+      const { chart } = this.chart;
+      console.debug({ chart });
+      if (chart.options.animation !== false) {
+        console.warn(
+          'Cannot create SVG: "animation" is not set to false (see the options section)'
+        );
+        return;
+      }
+      if (chart.options.responsive !== false) {
+        console.warn(
+          'Cannot create SVG: "responsive" is not set to false (see the options section)'
+        );
+        return;
+      }
+
+      /** @type {{canvas: HTMLCanvasElement}} */
+      const { canvas } = this.$refs;
+      const chartCanvas = canvas;
+      const svgContext = new C2S(chartCanvas.offsetWidth, chartCanvas.offsetHeight);
+      new Chart(svgContext, config);
+      const mySerializedSVG = svgContext.getSerializedSvg();
+      const svg = svgContext.getSvg();
+      console.debug({ mySerializedSVG, svg });
+
+      const blob = await generatePDF(mySerializedSVG);
+      window.open(URL.createObjectURL(blob), "_blank");
     },
 
     exportChartToSvg() {
